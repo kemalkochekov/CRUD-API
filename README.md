@@ -11,10 +11,11 @@ This project implements a CRUD (Create, Read, Update, Delete) API server using G
   - [Create](#create)
   - [Delete](#delete)
   - [Update](#update)
-  - [Api Documentation][#api-documentation]
+  - [Api Documentation](#api-documentation)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
+
 
 ## Features
 
