@@ -112,7 +112,7 @@ Update existing data in the database based on the provided ID.
 For detailed API documentation, including examples, request/response structures, and authentication details, please refer to the
 
 <a href="https://documenter.getpostman.com/view/31073105/2s9YeN2oV9" target="_blank">
-    <img alt="View API Doc Button" src="https://github.com/kemalkochekov/Go-Backend-CRUD-Api-Server/assets/85355663/19395eab-dfb3-49a8-b40a-f63d51f55dd6" width="200" height="60"/>
+    <img alt="View API Doc Button" src="https://github.com/kemalkochekov/Go-Backend-CRUD-Api-Server/assets/85355663/e5cc7ad1-a31f-4c0d-b4b7-c4ab6e69f5a7" width="200" height="60"/>
 </a>
 
 ## Testing
