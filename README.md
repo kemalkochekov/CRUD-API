@@ -1,6 +1,6 @@
-# Go Backend CRUD Api Server
+# CRUD API
 
-This project implements a CRUD (Create, Read, Update, Delete) API server using Go, a database, and the HTTP protocol. It allows you to perform basic CRUD operations on a specific entity.
+This project implements a CRUD (Create, Read, Update, Delete) API server for database and the HTTP protocol server by using Go. 
 
 ## Table of Contents
 - [Features](#features)
@@ -8,7 +8,7 @@ This project implements a CRUD (Create, Read, Update, Delete) API server using G
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
-  - [GetByID](#getbyid)
+  - [Get](#get)
   - [Create](#create)
   - [Delete](#delete)
   - [Update](#update)
@@ -20,7 +20,7 @@ This project implements a CRUD (Create, Read, Update, Delete) API server using G
 
 ## Features
 
-- GetByID: Retrieve data from the database based on the provided ID.
+- Get: Retrieve data from the database based on the provided ID.
 - Create: Add new data to the database.
 - Delete: Remove data from the database based on the provided ID.
 - Update: Update existing data in the database based on the provided ID.
@@ -37,12 +37,12 @@ Before running this application, ensure that you have the following prerequisite
 
 1. Clone the repository:
   ```bash
-    https://github.com/kemalkochekov/Go-Backend-CRUD-Api-Server.git
+    https://github.com/kemalkochekov/CRUD-API.git
   ```
 
 2. Navigate to the project directory:
   ```
-    cd Go-Backend-CRUD-Api-Server
+    cd CRUD-API
   ```
 3. Build the Docker image:
   ```
@@ -60,7 +60,7 @@ Before running this application, ensure that you have the following prerequisite
   ```
 ## API Endpoints
 
-### GetByID
+### Get
 
 - Method: GET
 - Endpoint: /entity
