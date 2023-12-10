@@ -1,20 +1,21 @@
 package handlers
 
 import (
-	"CRUD_Go_Backend/internal/handlers/serviceEntities"
+	"CRUD_Go_Backend/internal/handlers/models"
 	"CRUD_Go_Backend/internal/pkg/pkgErrors"
 	mock_repository "CRUD_Go_Backend/internal/repository/mocks"
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/mock/gomock"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"testing"
+
+	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestStudentHandler_Get(t *testing.T) {
@@ -23,14 +24,14 @@ func TestStudentHandler_Get(t *testing.T) {
 		queryParamKey = "id"
 	)
 	type mockExpected struct {
-		result serviceEntities.StudentRequest
+		result models.StudentRequest
 		error  error
 	}
 	tests := []struct {
 		description               string
 		mockArguments             int64
 		mockExpectedEntities      mockExpected
-		result                    serviceEntities.StudentRequest
+		result                    models.StudentRequest
 		expectedCode              int
 		expectedHTTPErrorResponse string
 	}{
@@ -38,19 +39,20 @@ func TestStudentHandler_Get(t *testing.T) {
 			description:               "Student not found",
 			mockArguments:             4,
 			mockExpectedEntities:      mockExpected{error: pkgErrors.ErrNotFound},
-			result:                    serviceEntities.StudentRequest{},
+			result:                    models.StudentRequest{},
 			expectedCode:              http.StatusNotFound,
 			expectedHTTPErrorResponse: "Student not found\n",
 		},
 		{
 			description:               "Student exists",
 			mockArguments:             1,
-			mockExpectedEntities:      mockExpected{result: serviceEntities.StudentRequest{StudentID: 1, StudentName: "Test", Grade: 90}, error: nil},
-			result:                    serviceEntities.StudentRequest{StudentID: 1, StudentName: "Test", Grade: 90},
+			mockExpectedEntities:      mockExpected{result: models.StudentRequest{StudentID: 1, StudentName: "Test", Grade: 90}, error: nil},
+			result:                    models.StudentRequest{StudentID: 1, StudentName: "Test", Grade: 90},
 			expectedCode:              http.StatusOK,
 			expectedHTTPErrorResponse: "",
 		},
 	}
+
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.description, func(t *testing.T) {
@@ -75,7 +77,7 @@ func TestStudentHandler_Get(t *testing.T) {
 				assert.Equal(t, tc.expectedHTTPErrorResponse, rr.Body.String())
 				return
 			}
-			var actual serviceEntities.StudentRequest
+			var actual models.StudentRequest
 			err = json.Unmarshal(rr.Body.Bytes(), &actual)
 			require.NoError(t, err)
 			assert.Equal(t, actual, tc.result)
@@ -94,29 +96,30 @@ func TestStudentHandler_Create(t *testing.T) {
 	}
 	tests := []struct {
 		description               string
-		mockArguments             serviceEntities.StudentRequest
+		mockArguments             models.StudentRequest
 		mockExpectedEntities      mockExpected
-		result                    serviceEntities.StudentRequest
+		result                    models.StudentRequest
 		expectedCode              int
 		expectedHTTPErrorResponse string
 	}{
 		{
 			description:               "Successfully Added into Database",
-			mockArguments:             serviceEntities.StudentRequest{StudentID: 1, StudentName: "Test", Grade: 90},
+			mockArguments:             models.StudentRequest{StudentID: 1, StudentName: "Test", Grade: 90},
 			mockExpectedEntities:      mockExpected{result: 1, error: nil},
-			result:                    serviceEntities.StudentRequest{StudentID: 1, StudentName: "Test", Grade: 90},
+			result:                    models.StudentRequest{StudentID: 1, StudentName: "Test", Grade: 90},
 			expectedCode:              http.StatusOK,
 			expectedHTTPErrorResponse: "",
 		},
 		{
 			description:               "Failed database unable to add",
-			mockArguments:             serviceEntities.StudentRequest{StudentID: 1, StudentName: "test", Grade: 98},
+			mockArguments:             models.StudentRequest{StudentID: 1, StudentName: "test", Grade: 98},
 			mockExpectedEntities:      mockExpected{result: 1, error: assert.AnError},
-			result:                    serviceEntities.StudentRequest{},
+			result:                    models.StudentRequest{},
 			expectedCode:              http.StatusInternalServerError,
 			expectedHTTPErrorResponse: "Failed to add student: assert.AnError general error for testing\n",
 		},
 	}
+
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.description, func(t *testing.T) {
@@ -143,7 +146,7 @@ func TestStudentHandler_Create(t *testing.T) {
 				return
 			}
 
-			var actual serviceEntities.StudentRequest
+			var actual models.StudentRequest
 			err = json.Unmarshal(rr.Body.Bytes(), &actual)
 			require.NoError(t, err)
 			assert.Equal(t, actual, tc.result)
@@ -185,6 +188,7 @@ func TestStudentHandler_Delete(t *testing.T) {
 			expectedCode:      http.StatusOK,
 		},
 	}
+
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.description, func(t *testing.T) {
@@ -220,25 +224,26 @@ func TestStudentHandler_Update(t *testing.T) {
 	tests := []struct {
 		description       string
 		expectedMessage   string
-		mockArguments     serviceEntities.StudentRequest
+		mockArguments     models.StudentRequest
 		mockExpectedError error
 		expectedCode      int
 	}{
 		{
 			description:       "Succesfully Updated in Database",
 			expectedMessage:   "Successfully Updated Student Info",
-			mockArguments:     serviceEntities.StudentRequest{StudentID: 0, StudentName: "Test2", Grade: 92},
+			mockArguments:     models.StudentRequest{StudentID: 0, StudentName: "Test2", Grade: 92},
 			mockExpectedError: nil,
 			expectedCode:      http.StatusOK,
 		},
 		{
 			description:       "Not Found",
 			expectedMessage:   "Student with such student_id not found\n",
-			mockArguments:     serviceEntities.StudentRequest{StudentID: 0, StudentName: "Test2", Grade: 92},
+			mockArguments:     models.StudentRequest{StudentID: 0, StudentName: "Test2", Grade: 92},
 			mockExpectedError: pkgErrors.ErrNotFound,
 			expectedCode:      http.StatusNotFound,
 		},
 	}
+
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.description, func(t *testing.T) {

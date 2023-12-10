@@ -4,10 +4,11 @@
 package repository
 
 import (
-	"CRUD_Go_Backend/internal/handlers/serviceEntities"
+	"CRUD_Go_Backend/internal/handlers/models"
 	"CRUD_Go_Backend/internal/pkg/pkgErrors"
 	"CRUD_Go_Backend/internal/repository/postgres"
 	"context"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -27,7 +28,7 @@ func TestCreateStudent(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -52,7 +53,7 @@ func TestGetStudent(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -73,7 +74,7 @@ func TestGetStudent(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -82,7 +83,7 @@ func TestGetStudent(t *testing.T) {
 		respStudentGet, err := studentRepo.GetByID(ctx, testStudentReq.StudentID)
 		//assert
 		require.Error(t, err)
-		assert.Equal(t, serviceEntities.StudentRequest{}, respStudentGet)
+		assert.Equal(t, models.StudentRequest{}, respStudentGet)
 	})
 }
 func TestUpdateStudent(t *testing.T) {
@@ -98,7 +99,7 @@ func TestUpdateStudent(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -127,7 +128,7 @@ func TestUpdateStudent(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -157,7 +158,7 @@ func TestDeleteStudent(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -175,14 +176,14 @@ func TestDeleteStudent(t *testing.T) {
 		respStudentGet, err := studentRepo.GetByID(ctx, testStudentReq.StudentID)
 		//assert
 		require.Error(t, err)
-		assert.Equal(t, serviceEntities.StudentRequest{}, respStudentGet)
+		assert.Equal(t, models.StudentRequest{}, respStudentGet)
 	})
 	t.Run("Failed to Delete, Not Found", func(t *testing.T) {
 		db.SetUpDatabase(migrationPath)
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,

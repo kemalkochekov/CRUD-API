@@ -3,15 +3,17 @@ package main
 import (
 	"CRUD_Go_Backend/internal/config"
 	"CRUD_Go_Backend/internal/handlers"
+	"CRUD_Go_Backend/internal/pkg/connection"
 	"CRUD_Go_Backend/internal/repository"
-	"CRUD_Go_Backend/internal/repository/connectionDatabase"
 	"context"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -30,19 +32,20 @@ func main() {
 		log.Fatalf("Could not get environment variable: %v", err)
 	}
 
-	database, err := connectionDatabase.NewDB(ctx, dbConfig)
+	database, err := connection.NewDB(ctx, dbConfig)
 	if err != nil {
 		log.Fatalf("Failed to connect Database %s", err)
 	}
 
 	defer database.GetPool(ctx).Close()
 
-	err = connectionDatabase.MigrationUp(dbConfig)
+	err = connection.MigrationUp(dbConfig)
 	if err != nil {
 		log.Fatalf("Failed to %v", err)
 	}
 
 	quit := make(chan os.Signal, 1)
+
 	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	defer signal.Stop(quit)
 
@@ -50,7 +53,7 @@ func main() {
 		<-quit
 		log.Printf("Graceful Shut down")
 		// Perform graceful shut down
-		if err := connectionDatabase.MigrationDownAndCloseSql(dbConfig); err != nil {
+		if err := connection.MigrationDownAndCloseSql(dbConfig); err != nil {
 			log.Printf("Error during migration down and closing SQL: %v", err)
 		}
 

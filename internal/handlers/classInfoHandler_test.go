@@ -1,20 +1,21 @@
 package handlers
 
 import (
-	"CRUD_Go_Backend/internal/handlers/serviceEntities"
+	"CRUD_Go_Backend/internal/handlers/models"
 	"CRUD_Go_Backend/internal/pkg/pkgErrors"
 	mock_repository "CRUD_Go_Backend/internal/repository/mocks"
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/mock/gomock"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"testing"
+
+	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestClassInfoHandler_AddClass(t *testing.T) {
@@ -28,29 +29,30 @@ func TestClassInfoHandler_AddClass(t *testing.T) {
 	}
 	tests := []struct {
 		description               string
-		mockArguments             serviceEntities.ClassInfo
+		mockArguments             models.ClassInfo
 		mockExpectedEntities      mockExpected
-		result                    serviceEntities.ClassInfo
+		result                    models.ClassInfo
 		expectedCode              int
 		expectedHTTPErrorResponce string
 	}{
 		{
 			description:               "Succesfully Added into Database",
-			mockArguments:             serviceEntities.ClassInfo{StudentID: 1, ClassName: "math"},
+			mockArguments:             models.ClassInfo{StudentID: 1, ClassName: "math"},
 			mockExpectedEntities:      mockExpected{result: 0, error: nil},
-			result:                    serviceEntities.ClassInfo{StudentID: 1, ClassName: "math"},
+			result:                    models.ClassInfo{StudentID: 1, ClassName: "math"},
 			expectedCode:              http.StatusOK,
 			expectedHTTPErrorResponce: "",
 		},
 		{
 			description:               "ForeignKey Error",
-			mockArguments:             serviceEntities.ClassInfo{StudentID: 2, ClassName: "math"},
+			mockArguments:             models.ClassInfo{StudentID: 2, ClassName: "math"},
 			mockExpectedEntities:      mockExpected{result: -1, error: pkgErrors.ErrForeignKey},
-			result:                    serviceEntities.ClassInfo{},
+			result:                    models.ClassInfo{},
 			expectedCode:              http.StatusInternalServerError,
 			expectedHTTPErrorResponce: "Failed to add class_info: ERROR: insert or update on table \"class_info\" violates foreign key constraint \"fk_student\" (SQLSTATE 23503)\n",
 		},
 	}
+
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.description, func(t *testing.T) {
@@ -71,12 +73,13 @@ func TestClassInfoHandler_AddClass(t *testing.T) {
 			if rr.Code != tc.expectedCode {
 				t.Errorf("handler returned wrong status code: got %v want %v", rr.Code, tc.expectedCode)
 			}
+
 			if rr.Code != http.StatusOK {
 				assert.Equal(t, tc.expectedHTTPErrorResponce, rr.Body.String())
 				return
 			}
 
-			var actual serviceEntities.ClassInfo
+			var actual models.ClassInfo
 			err = json.Unmarshal(rr.Body.Bytes(), &actual)
 			require.NoError(t, err)
 			assert.Equal(t, actual, tc.result)
@@ -90,22 +93,22 @@ func TestClassInfoHandler_GetAllClassesByStudent(t *testing.T) {
 		queryParamKey = "id"
 	)
 	type mockExpected struct {
-		result []serviceEntities.ClassInfo
+		result []models.ClassInfo
 		error  error
 	}
 	tests := []struct {
 		description               string
 		mockArguments             int64
 		mockExpectedEntities      mockExpected
-		result                    []serviceEntities.ClassInfo
+		result                    []models.ClassInfo
 		expectedCode              int
 		expectedHTTPErrorResponce string
 	}{
 		{
 			description:               "Succesfully Get ClassInfo By StudentID",
 			mockArguments:             1,
-			mockExpectedEntities:      mockExpected{result: []serviceEntities.ClassInfo{{StudentID: 1, ClassName: "math"}}, error: nil},
-			result:                    []serviceEntities.ClassInfo{{StudentID: 1, ClassName: "math"}},
+			mockExpectedEntities:      mockExpected{result: []models.ClassInfo{{StudentID: 1, ClassName: "math"}}, error: nil},
+			result:                    []models.ClassInfo{{StudentID: 1, ClassName: "math"}},
 			expectedCode:              http.StatusOK,
 			expectedHTTPErrorResponce: "",
 		},
@@ -113,11 +116,12 @@ func TestClassInfoHandler_GetAllClassesByStudent(t *testing.T) {
 			description:               "In ClassInfo with StudentID does not exist",
 			mockArguments:             2,
 			mockExpectedEntities:      mockExpected{},
-			result:                    []serviceEntities.ClassInfo{},
+			result:                    []models.ClassInfo{},
 			expectedCode:              http.StatusNotFound,
 			expectedHTTPErrorResponce: "No existing student in class_info\n",
 		},
 	}
+
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.description, func(t *testing.T) {
@@ -142,7 +146,7 @@ func TestClassInfoHandler_GetAllClassesByStudent(t *testing.T) {
 				assert.Equal(t, tc.expectedHTTPErrorResponce, rr.Body.String())
 				return
 			}
-			var actual []serviceEntities.ClassInfo
+			var actual []models.ClassInfo
 			err = json.Unmarshal(rr.Body.Bytes(), &actual)
 			require.NoError(t, err)
 			assert.Equal(t, actual, tc.result)
@@ -183,6 +187,7 @@ func TestClassInfoHandler_DeleteClassByStudent(t *testing.T) {
 			expectedCode:      http.StatusOK,
 		},
 	}
+
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.description, func(t *testing.T) {
@@ -217,25 +222,26 @@ func TestClassInfoHandler_UpdateClass(t *testing.T) {
 	tests := []struct {
 		description       string
 		expectedMessage   string
-		mockArguments     serviceEntities.ClassInfo
+		mockArguments     models.ClassInfo
 		mockExpectedError error
 		expectedCode      int
 	}{
 		{
 			description:       "Successfully Updated in Database",
 			expectedMessage:   "Successfully Updated Class Info",
-			mockArguments:     serviceEntities.ClassInfo{StudentID: 1, ClassName: "math"},
+			mockArguments:     models.ClassInfo{StudentID: 1, ClassName: "math"},
 			mockExpectedError: nil,
 			expectedCode:      http.StatusOK,
 		},
 		{
 			description:       "Not Found",
 			expectedMessage:   "Cannot update the student in class_info due to existing references (foreign key constraint).\n",
-			mockArguments:     serviceEntities.ClassInfo{StudentID: 2, ClassName: "math"},
+			mockArguments:     models.ClassInfo{StudentID: 2, ClassName: "math"},
 			mockExpectedError: pkgErrors.ErrNotFound,
 			expectedCode:      http.StatusNotFound,
 		},
 	}
+
 	for _, tc := range tests {
 		tc := tc
 		t.Run(tc.description, func(t *testing.T) {

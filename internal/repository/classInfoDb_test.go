@@ -4,10 +4,11 @@
 package repository
 
 import (
-	"CRUD_Go_Backend/internal/handlers/serviceEntities"
+	"CRUD_Go_Backend/internal/handlers/models"
 	"CRUD_Go_Backend/internal/pkg/pkgErrors"
 	"CRUD_Go_Backend/internal/repository/postgres"
 	"context"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -27,7 +28,7 @@ func TestCreateClassInfo(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -41,7 +42,7 @@ func TestCreateClassInfo(t *testing.T) {
 
 		//arrange
 		classInfoRepo := NewClassInfoStorage(db.DB)
-		testClassInfoReq := serviceEntities.ClassInfo{
+		testClassInfoReq := models.ClassInfo{
 			ID:        1,
 			StudentID: respStudentID,
 			ClassName: "Math",
@@ -64,7 +65,7 @@ func TestCreateClassInfo(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		classInfoRepo := NewClassInfoStorage(db.DB)
-		testClassInfoReq := serviceEntities.ClassInfo{ID: 1, StudentID: 1, ClassName: "Math"}
+		testClassInfoReq := models.ClassInfo{ID: 1, StudentID: 1, ClassName: "Math"}
 		//act
 		createClassInfoID, err := classInfoRepo.Add(ctx, testClassInfoReq)
 		//assert
@@ -76,7 +77,7 @@ func TestCreateClassInfo(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -89,7 +90,7 @@ func TestCreateClassInfo(t *testing.T) {
 		assert.NotZero(t, respStudentID)
 		//arrange
 		classInfoRepo := NewClassInfoStorage(db.DB)
-		testClassInfoReq := serviceEntities.ClassInfo{ID: 1, StudentID: 1, ClassName: "Math"}
+		testClassInfoReq := models.ClassInfo{ID: 1, StudentID: 1, ClassName: "Math"}
 		createClassInfoID, err := classInfoRepo.Add(ctx, testClassInfoReq)
 		require.NoError(t, err)
 		assert.NotZero(t, createClassInfoID)
@@ -115,7 +116,7 @@ func TestGetByStudentIDClassInfo(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -126,7 +127,7 @@ func TestGetByStudentIDClassInfo(t *testing.T) {
 		assert.NotZero(t, respStudentID)
 		//arrange
 		classInfoRepo := NewClassInfoStorage(db.DB)
-		testClassInfoReq := serviceEntities.ClassInfo{
+		testClassInfoReq := models.ClassInfo{
 			ID:        1,
 			StudentID: respStudentID,
 			ClassName: "Math",
@@ -147,7 +148,7 @@ func TestGetByStudentIDClassInfo(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -181,7 +182,7 @@ func TestDeleteClassByStudentIDClassInfo(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -194,7 +195,7 @@ func TestDeleteClassByStudentIDClassInfo(t *testing.T) {
 
 		classInfoRepo := NewClassInfoStorage(db.DB)
 		//act
-		testClassInfoReq := serviceEntities.ClassInfo{
+		testClassInfoReq := models.ClassInfo{
 			ID:        1,
 			StudentID: respStudentID,
 			ClassName: "Math",
@@ -216,7 +217,7 @@ func TestDeleteClassByStudentIDClassInfo(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -228,7 +229,7 @@ func TestDeleteClassByStudentIDClassInfo(t *testing.T) {
 
 		classInfoRepo := NewClassInfoStorage(db.DB)
 		//act
-		testClassInfoReq := serviceEntities.ClassInfo{
+		testClassInfoReq := models.ClassInfo{
 			ID:        1,
 			StudentID: respStudentID,
 			ClassName: "Math",
@@ -254,7 +255,7 @@ func TestUpdateClassInfo(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -268,7 +269,7 @@ func TestUpdateClassInfo(t *testing.T) {
 
 		classInfoRepo := NewClassInfoStorage(db.DB)
 		//act
-		testClassInfoReq := serviceEntities.ClassInfo{
+		testClassInfoReq := models.ClassInfo{
 			ID:        1,
 			StudentID: respStudentID,
 			ClassName: "Math",
@@ -287,7 +288,7 @@ func TestUpdateClassInfo(t *testing.T) {
 		defer db.TearDownDatabase(migrationPath)
 		//arrange
 		studentRepo := NewStudentStorage(db.DB)
-		testStudentReq := serviceEntities.StudentRequest{
+		testStudentReq := models.StudentRequest{
 			StudentID:   1,
 			StudentName: "Test",
 			Grade:       90,
@@ -300,7 +301,7 @@ func TestUpdateClassInfo(t *testing.T) {
 
 		classInfoRepo := NewClassInfoStorage(db.DB)
 		//act
-		testClassInfoReq := serviceEntities.ClassInfo{
+		testClassInfoReq := models.ClassInfo{
 			ID:        1,
 			StudentID: respStudentID,
 			ClassName: "Math",

@@ -2,19 +2,19 @@
 package repository
 
 import (
-	"CRUD_Go_Backend/internal/handlers/serviceEntities"
+	"CRUD_Go_Backend/internal/handlers/models"
 	"context"
 )
 
 type StudentPgRepo interface {
-	Add(ctx context.Context, studentReq serviceEntities.StudentRequest) (int64, error)
-	GetByID(ctx context.Context, studentID int64) (serviceEntities.StudentRequest, error)
+	Add(ctx context.Context, studentReq models.StudentRequest) (int64, error)
+	GetByID(ctx context.Context, studentID int64) (models.StudentRequest, error)
 	Delete(ctx context.Context, studentID int64) error
-	Update(ctx context.Context, studentId int64, studentReq serviceEntities.StudentRequest) error
+	Update(ctx context.Context, studentID int64, studentReq models.StudentRequest) error
 }
 type ClassInfoPgRepo interface {
-	Add(ctx context.Context, classInfoReq serviceEntities.ClassInfo) (int64, error)
-	GetByStudentID(ctx context.Context, studentId int64) ([]serviceEntities.ClassInfo, error)
+	Add(ctx context.Context, classInfoReq models.ClassInfo) (int64, error)
+	GetByStudentID(ctx context.Context, studentID int64) ([]models.ClassInfo, error)
 	DeleteClassByStudentID(ctx context.Context, studentID int64) error
-	Update(ctx context.Context, studentId int64, classInfoReq serviceEntities.ClassInfo) error
+	Update(ctx context.Context, studentID int64, classInfoReq models.ClassInfo) error
 }

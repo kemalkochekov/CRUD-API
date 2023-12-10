@@ -22,12 +22,15 @@ func FromEnv() (DatabaseConfig, error) {
 		DBName:   os.Getenv("DB_NAME"),
 	}
 	var err error
+
 	dbConfig.Port, err = strconv.Atoi(os.Getenv("DB_PORT"))
 	if err != nil {
 		return DatabaseConfig{}, pkgErrors.ErrParse
 	}
+
 	if dbConfig.Host == "" || dbConfig.User == "" || dbConfig.Password == "" || dbConfig.DBName == "" {
 		return DatabaseConfig{}, pkgErrors.ErrDbConfigNotFound
 	}
+
 	return dbConfig, nil
 }

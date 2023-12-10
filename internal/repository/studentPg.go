@@ -1,25 +1,26 @@
 package repository
 
 import (
-	"CRUD_Go_Backend/internal/handlers/serviceEntities"
-	"CRUD_Go_Backend/internal/pkg/pkgErrors"
-	"CRUD_Go_Backend/internal/repository/connectionDatabase"
-	"CRUD_Go_Backend/internal/repository/entities"
 	"context"
 	"errors"
+
+	"CRUD_Go_Backend/internal/handlers/models"
+	"CRUD_Go_Backend/internal/pkg/connection"
+	"CRUD_Go_Backend/internal/pkg/pkgErrors"
+	"CRUD_Go_Backend/internal/repository/entities"
 
 	"github.com/jackc/pgx"
 )
 
 type StudentStorage struct {
-	db connectionDatabase.DBops
+	db connection.DBops
 }
 
-func NewStudentStorage(database connectionDatabase.DBops) StudentStorage {
+func NewStudentStorage(database connection.DBops) StudentStorage {
 	return StudentStorage{db: database}
 }
 
-func ToStudentStorage(s serviceEntities.StudentRequest) entities.Student {
+func ToStudentStorage(s models.StudentRequest) entities.Student {
 	return entities.Student{
 		StudentID:   s.StudentID,
 		StudentName: s.StudentName,
@@ -27,7 +28,7 @@ func ToStudentStorage(s serviceEntities.StudentRequest) entities.Student {
 	}
 }
 
-func (r *StudentStorage) Add(ctx context.Context, studentReq serviceEntities.StudentRequest) (int64, error) {
+func (r *StudentStorage) Add(ctx context.Context, studentReq models.StudentRequest) (int64, error) {
 	student := ToStudentStorage(studentReq)
 	var studentID int64
 	err := r.db.ExecQueryRow(ctx,
@@ -35,20 +36,29 @@ func (r *StudentStorage) Add(ctx context.Context, studentReq serviceEntities.Stu
 		student.StudentName,
 		student.Grade,
 	).Scan(&studentID)
+
 	if err != nil {
 		return -1, err
 	}
+
 	return studentID, err
 }
 
-func (r *StudentStorage) GetByID(ctx context.Context, studentID int64) (serviceEntities.StudentRequest, error) {
+func (r *StudentStorage) GetByID(ctx context.Context, studentID int64) (models.StudentRequest, error) {
 	var student entities.Student
-	err := r.db.Get(ctx, &student, `SELECT student_id, student_name, grade, created_at FROM student WHERE student_id=$1;`, studentID)
+
+	err := r.db.Get(
+		ctx,
+		&student,
+		`SELECT student_id, student_name, grade, created_at FROM student WHERE student_id=$1;`,
+		studentID,
+	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return serviceEntities.StudentRequest{}, pkgErrors.ErrNotFound
+			return models.StudentRequest{}, pkgErrors.ErrNotFound
 		}
-		return serviceEntities.StudentRequest{}, err
+
+		return models.StudentRequest{}, err
 	}
 
 	return student.ToStudentDomain(), nil
@@ -59,26 +69,30 @@ func (r *StudentStorage) Delete(ctx context.Context, studentID int64) error {
 	if err != nil {
 		return err
 	}
+
 	if command.RowsAffected() == 0 {
 		return pkgErrors.ErrNotFound
 	}
+
 	return nil
 }
 
-func (r *StudentStorage) Update(ctx context.Context, studentId int64, studentReq serviceEntities.StudentRequest) error {
+func (r *StudentStorage) Update(ctx context.Context, studentID int64, studentReq models.StudentRequest) error {
 	student := ToStudentStorage(studentReq)
 
 	command, err := r.db.Exec(ctx, `
 		UPDATE student
 		SET student_name = $2, grade = $3
 		WHERE student_id = $1
-	`, studentId, student.StudentName, student.Grade)
+	`, studentID, student.StudentName, student.Grade)
 
 	if err != nil {
 		return err
 	}
+
 	if command.RowsAffected() == 0 {
 		return pkgErrors.ErrNotFound
 	}
+
 	return nil
 }

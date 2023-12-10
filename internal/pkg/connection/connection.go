@@ -1,18 +1,19 @@
-package connectionDatabase
+//go:generate mockgen -source ./connection.go -destination=./mocks/connection.go -package=mock_repository
+package connection
 
 import (
-	"CRUD_Go_Backend/internal/config"
 	"context"
 	"database/sql"
-
 	"fmt"
-	_ "github.com/lib/pq"
-	"github.com/pressly/goose/v3"
+
+	"CRUD_Go_Backend/internal/config"
 
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	_ "github.com/lib/pq"
+	"github.com/pressly/goose/v3"
 )
 
 type DBops interface {

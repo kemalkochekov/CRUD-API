@@ -1,19 +1,20 @@
 package postgres
 
 import (
-	"CRUD_Go_Backend/internal/config"
-	"CRUD_Go_Backend/internal/pkg/pkgErrors"
-	"CRUD_Go_Backend/internal/repository/connectionDatabase"
+	"CRUD_Go_Backend/internal/pkg/connection"
 	"context"
 	"database/sql"
-	_ "github.com/lib/pq"
+	"log"
+
+	"CRUD_Go_Backend/internal/config"
+	"CRUD_Go_Backend/internal/pkg/pkgErrors"
+
 	"github.com/pkg/errors"
 	"github.com/pressly/goose/v3"
-	"log"
 )
 
 type TDB struct {
-	DB               connectionDatabase.DBops
+	DB               connection.DBops
 	connectionConfig string
 }
 
@@ -23,33 +24,43 @@ func NewFromEnv() *TDB {
 		if errors.Is(err, pkgErrors.ErrDbConfigNotFound) {
 			log.Fatal(pkgErrors.ErrDbConfigNotFound)
 		}
+
 		log.Fatalf("could not parse DB_PORT or it is empty: %v", err)
 	}
-	database, err := connectionDatabase.NewDB(context.Background(), dbConfig)
+
+	database, err := connection.NewDB(context.Background(), dbConfig)
 	if err != nil {
 		log.Fatalf("Failed to connect Database %s", err)
 	}
-	return &TDB{DB: database, connectionConfig: connectionDatabase.GenerateDsn(dbConfig)}
+
+	return &TDB{DB: database, connectionConfig: connection.GenerateDsn(dbConfig)}
 }
 
 func (d *TDB) SetUpDatabase(migrationPath string) {
-
 	db, err := sql.Open("postgres", d.connectionConfig)
 	if err != nil {
-		log.Fatalf("Failed to connect to the database: %v", err)
+		log.Printf("Failed to connect to the database: %v", err)
+		return
 	}
+
 	defer db.Close()
+
 	if err := goose.Up(db, migrationPath); err != nil {
-		log.Fatalf("Error setting up the database migrations: %v", err)
+		log.Printf("Error setting up the database migrations: %v", err)
+		return
 	}
 }
 func (d *TDB) TearDownDatabase(migrationPath string) {
 	db, err := sql.Open("postgres", d.connectionConfig)
 	if err != nil {
-		log.Fatalf("Failed to connect to the database: %v", err)
+		log.Printf("Failed to connect to the database: %v", err)
+		return
 	}
+
 	defer db.Close()
+
 	if err := goose.Down(db, migrationPath); err != nil { // Specify the path to your migrations directory
-		log.Fatalf("Error tearing down the database migrations: %v", err)
+		log.Printf("Error tearing down the database migrations: %v", err)
+		return
 	}
 }

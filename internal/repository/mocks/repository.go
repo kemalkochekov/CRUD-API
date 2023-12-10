@@ -9,7 +9,7 @@
 package mock_repository
 
 import (
-	serviceEntities "CRUD_Go_Backend/internal/handlers/serviceEntities"
+	serviceEntities "CRUD_Go_Backend/internal/handlers/models"
 	context "context"
 	reflect "reflect"
 

@@ -1,4 +1,4 @@
-package serviceEntities
+package models
 
 type ClassInfo struct {
 	ID        int64  `json:"id"`

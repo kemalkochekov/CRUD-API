@@ -1,7 +1,7 @@
 package entities
 
 import (
-	"CRUD_Go_Backend/internal/handlers/serviceEntities"
+	"CRUD_Go_Backend/internal/handlers/models"
 	"time"
 )
 
@@ -12,8 +12,8 @@ type Student struct {
 	CreatedAt   time.Time `db:"created_at"`
 }
 
-func (s *Student) ToStudentDomain() serviceEntities.StudentRequest {
-	return serviceEntities.StudentRequest{
+func (s *Student) ToStudentDomain() models.StudentRequest {
+	return models.StudentRequest{
 		StudentID:   s.StudentID,
 		StudentName: s.StudentName,
 		Grade:       s.Grade,

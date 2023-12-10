@@ -1,4 +1,4 @@
-package serviceEntities
+package models
 
 type StudentRequest struct {
 	StudentID   int64  `json:"student_id"`
