@@ -56,7 +56,7 @@ Before running this application, ensure that you have the following prerequisite
   ```
 2. The application will be accessible at:
   ```
-    http://127.0.0.1:9000
+    localhost:9000
   ```
 ## API Endpoints
 
