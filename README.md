@@ -132,7 +132,7 @@ This project maintains code quality using `golangci-lint`, a fast and customizab
 To install `golangci-lint`, you can use `go get`:
 
 ```bash
-go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
+  go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 ```
 
 ### Linting Usage
