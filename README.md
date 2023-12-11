@@ -14,8 +14,8 @@ This project implements a CRUD (Create, Read, Update, Delete) API server for dat
   - [Update](#update)
   - [Api Documentation](#api-documentation)
 - [Linting and Code Quality](#linting-and-code-quality)
-  - [Installation](#linting-installation)
-  - [Usage](#linting-usage)
+  - [Linting Installation](#linting-installation)
+  - [Linting Usage](#linting-usage)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
@@ -127,7 +127,7 @@ For detailed API documentation, including examples, request/response structures,
 
 This project maintains code quality using `golangci-lint`, a fast and customizable Go linter. `golangci-lint` checks for various issues, ensures code consistency, and enforces best practices, helping maintain a clean and standardized codebase.
 
-### Installation
+### Linting Installation
 
 To install `golangci-lint`, you can use `go get`:
 
@@ -135,7 +135,7 @@ To install `golangci-lint`, you can use `go get`:
 go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 ```
 
-### Usage
+### Linting Usage
 
 Once installed, you can run golangci-lint on your project by executing the following command at the root directory of your project:
 
@@ -143,6 +143,7 @@ Once installed, you can run golangci-lint on your project by executing the follo
   golangci-lint run
 ```
 This command performs linting checks on your entire project and provides a detailed report highlighting any issues or violations found.
+
 
 ## Testing
 
